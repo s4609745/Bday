@@ -199,60 +199,49 @@ const MemoryScroll = ({ scrollToCard }) => {
       ))}
 
       {/* Mobile navigation buttons */}
-      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-4 z-50 sm:hidden">
-        <motion.button
+      <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-4 z-50 md:hidden">
+        <button
           onClick={prevSection}
           disabled={activeIndex === 0}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all ${
+          className={`w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-xl font-bold transition-all ${
             activeIndex === 0 
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-              : 'bg-pink-500 text-white hover:bg-pink-600'
+              : 'bg-pink-500 text-white hover:bg-pink-600 active:scale-95'
           }`}
         >
           ↑
-        </motion.button>
-        <motion.button
+        </button>
+        <button
           onClick={nextSection}
           disabled={activeIndex === sections.length - 1}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all ${
+          className={`w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-xl font-bold transition-all ${
             activeIndex === sections.length - 1
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-pink-500 text-white hover:bg-pink-600'
+              : 'bg-pink-500 text-white hover:bg-pink-600 active:scale-95'
           }`}
         >
           ↓
-        </motion.button>
+        </button>
       </div>
 
       {/* Continue button */}
       {activeIndex === sections.length - 1 && (
-        <motion.button
+        <button
           onClick={scrollToCard}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 1, duration: 0.8, type: "spring" }}
-          whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(236, 72, 153, 0.3)" }}
-          whileTap={{ scale: 0.95 }}
-          className="fixed bottom-8 right-4 sm:right-8 px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full shadow-xl hover:from-pink-600 hover:to-rose-600 transition-all duration-300 flex items-center z-50 text-sm sm:text-base"
+          className="fixed bottom-8 right-4 px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full shadow-xl hover:from-pink-600 hover:to-rose-600 transition-all duration-300 flex items-center z-50 text-sm sm:text-base active:scale-95"
         >
-          Continue <FaArrowDown className="ml-2 animate-bounce" />
-        </motion.button>
+          Continue <FaArrowDown className="ml-2" />
+        </button>
       )}
 
       {/* Progress indicator */}
-      <div className="fixed top-1/2 right-4 sm:right-8 transform -translate-y-1/2 z-50">
+      <div className="fixed top-1/2 right-4 transform -translate-y-1/2 z-50">
         <div className="flex flex-col items-center space-y-3">
           {sections.map((_, index) => (
-            <motion.button
+            <button
               key={index}
               onClick={() => setActiveIndex(index)}
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.8 }}
-              className={`rounded-full transition-all duration-300 ${
+              className={`rounded-full transition-all duration-300 hover:scale-110 active:scale-90 ${
                 index === activeIndex 
                   ? 'bg-pink-600 w-4 h-4 shadow-lg' 
                   : 'bg-pink-300 w-3 h-3 hover:bg-pink-400'
