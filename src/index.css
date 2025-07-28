@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,11 +11,21 @@
 
 body {
   margin: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   background-color: #fff;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+button {
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  background-color: #ec4899;
+  border-radius: 5px;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border: none;
+  transition: background-color 0.3s ease;
 }
 
 img {
@@ -25,7 +35,7 @@ img {
 }
 
 .dancing-script {
-  font-family: 'Dancing Script', cursive;
+  font-family: "Dancing Script", cursive;
 }
 
 /* Mobile-first responsive utilities */
@@ -33,7 +43,7 @@ img {
   .text-responsive {
     font-size: clamp(1.5rem, 8vw, 3rem);
   }
-  
+
   .text-responsive-lg {
     font-size: clamp(2rem, 10vw, 4rem);
   }
