@@ -30,15 +30,11 @@ const MemorySection = ({ item, index, isActive }) => {
             className="relative z-10 max-w-lg mx-auto"
           >
             <div className="relative mb-8">
-              <motion.img
-                src={`/src/assets/${item.image}`}
+              <img
+                src={item.image}
                 alt="Memory"
-                className="w-full max-w-sm mx-auto rounded-2xl shadow-2xl object-cover border-4 border-white/80 backdrop-blur-sm"
+                className="w-full max-w-sm mx-auto rounded-2xl shadow-2xl object-cover border-4 border-white/80"
                 style={{ aspectRatio: '4/5', maxHeight: '400px' }}
-                whileHover={{ scale: 1.02, rotate: 0 }}
-                initial={{ rotate: index % 2 === 0 ? 2 : -2 }}
-                animate={{ rotate: index % 2 === 0 ? 1 : -1 }}
-                transition={{ duration: 0.5 }}
               />
               <motion.div
                 initial={{ scale: 0 }}
@@ -113,16 +109,15 @@ const MemorySection = ({ item, index, isActive }) => {
 
 const MemoryScroll = ({ scrollToCard }) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [touchStart, setTouchStart] = useState(null);
 
   const sections = [
-    { text: "The Day You Were Born — July 28, 2000", image: "IMG-20201228-WA0000.jpg" },
-    { text: "You were full of life, laughter, and light.", image: "IMG-20221013-WA0021.jpg" },
-    { text: "Our virtual laughs and real emotions.", image: "received_291728971735716.jpeg" },
-    { text: "You looked like poetry in motion.", image: "received_395726577943816.jpeg" },
-    { text: "Even in rest, you were beauty personified.", image: "received_461249184451801.jpeg" },
-    { text: "Your mischief, your spark — unforgettable.", image: "received_834482910225079.jpeg" },
-    { text: "That smile could melt every worry.", image: "Screenshot_20200730-185227_WhatsApp.jpg" },
+    { text: "The Day You Were Born — July 28, 2000", image: "/images/IMG-20201228-WA0000.jpg" },
+    { text: "You were full of life, laughter, and light.", image: "/images/IMG-20221013-WA0021.jpg" },
+    { text: "Our virtual laughs and real emotions.", image: "/images/received_291728971735716.jpeg" },
+    { text: "You looked like poetry in motion.", image: "/images/received_395726577943816.jpeg" },
+    { text: "Even in rest, you were beauty personified.", image: "/images/received_461249184451801.jpeg" },
+    { text: "Your mischief, your spark — unforgettable.", image: "/images/received_834482910225079.jpeg" },
+    { text: "That smile could melt every worry.", image: "/images/Screenshot_20200730-185227_WhatsApp.jpg" },
   ];
 
   const nextSection = () => {
@@ -132,60 +127,6 @@ const MemoryScroll = ({ scrollToCard }) => {
   const prevSection = () => {
     setActiveIndex(prev => Math.max(prev - 1, 0));
   };
-
-  useEffect(() => {
-    const handleScroll = (e) => {
-      e.preventDefault();
-      if (e.deltaY > 0) {
-        nextSection();
-      } else {
-        prevSection();
-      }
-    };
-
-    const handleTouchStart = (e) => {
-      setTouchStart(e.touches[0].clientY);
-    };
-
-    const handleTouchEnd = (e) => {
-      if (!touchStart) return;
-      
-      const touchEnd = e.changedTouches[0].clientY;
-      const diff = touchStart - touchEnd;
-      
-      if (Math.abs(diff) > 50) {
-        if (diff > 0) {
-          nextSection();
-        } else {
-          prevSection();
-        }
-      }
-      
-      setTouchStart(null);
-    };
-
-    const handleKeyDown = (e) => {
-      if (e.key === 'ArrowDown' || e.key === ' ') {
-        e.preventDefault();
-        nextSection();
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        prevSection();
-      }
-    };
-
-    window.addEventListener('wheel', handleScroll, { passive: false });
-    window.addEventListener('touchstart', handleTouchStart);
-    window.addEventListener('touchend', handleTouchEnd);
-    window.addEventListener('keydown', handleKeyDown);
-    
-    return () => {
-      window.removeEventListener('wheel', handleScroll);
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchend', handleTouchEnd);
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [touchStart]);
 
   return (
     <div className="relative">
@@ -198,29 +139,29 @@ const MemoryScroll = ({ scrollToCard }) => {
         />
       ))}
 
-      {/* Mobile navigation buttons */}
-      <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-4 z-50 md:hidden">
+      {/* Navigation buttons */}
+      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-4 z-50">
         <button
           onClick={prevSection}
           disabled={activeIndex === 0}
-          className={`w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-xl font-bold transition-all ${
+          className={`px-4 py-2 rounded-full shadow-lg font-medium transition-all ${
             activeIndex === 0 
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-              : 'bg-pink-500 text-white hover:bg-pink-600 active:scale-95'
+              : 'bg-pink-500 text-white hover:bg-pink-600'
           }`}
         >
-          ↑
+          Previous
         </button>
         <button
           onClick={nextSection}
           disabled={activeIndex === sections.length - 1}
-          className={`w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-xl font-bold transition-all ${
+          className={`px-4 py-2 rounded-full shadow-lg font-medium transition-all ${
             activeIndex === sections.length - 1
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-pink-500 text-white hover:bg-pink-600 active:scale-95'
+              : 'bg-pink-500 text-white hover:bg-pink-600'
           }`}
         >
-          ↓
+          Next
         </button>
       </div>
 
