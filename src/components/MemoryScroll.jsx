@@ -1,0 +1,278 @@
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { FaHeart, FaArrowDown } from 'react-icons/fa';
+
+const MemorySection = ({ item, index, isActive }) => {
+  const bgColors = [
+    'from-pink-50 to-rose-100',
+    'from-purple-50 to-pink-100', 
+    'from-rose-50 to-pink-100',
+    'from-pink-100 to-purple-100',
+    'from-violet-50 to-pink-100',
+    'from-pink-50 to-violet-100',
+    'from-rose-100 to-pink-50'
+  ];
+
+  return (
+    <motion.section
+      key={index}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isActive ? 1 : 0.3 }}
+      transition={{ duration: 0.8 }}
+      className={`min-h-screen flex flex-col items-center justify-center text-center px-4 py-8 relative bg-gradient-to-br ${bgColors[index % bgColors.length]} ${isActive ? '' : 'pointer-events-none'}`}
+    >
+      {isActive && (
+        <>
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0, y: 30 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="relative z-10 max-w-lg mx-auto"
+          >
+            <div className="relative mb-8">
+              <motion.img
+                src={`/src/assets/${item.image}`}
+                alt="Memory"
+                className="w-full max-w-sm mx-auto rounded-2xl shadow-2xl object-cover border-4 border-white/80 backdrop-blur-sm"
+                style={{ aspectRatio: '4/5', maxHeight: '400px' }}
+                whileHover={{ scale: 1.02, rotate: 0 }}
+                initial={{ rotate: index % 2 === 0 ? 2 : -2 }}
+                animate={{ rotate: index % 2 === 0 ? 1 : -1 }}
+                transition={{ duration: 0.5 }}
+              />
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
+                className="absolute -top-3 -right-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg font-bold text-lg"
+              >
+                {index + 1}
+              </motion.div>
+            </div>
+
+            <motion.h2
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+              className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-800 mb-6 px-4 leading-relaxed dancing-script"
+            >
+              {item.text}
+            </motion.h2>
+
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.8, type: "spring", stiffness: 150 }}
+              className="flex justify-center space-x-1"
+            >
+              {[...Array(3)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  animate={{ 
+                    scale: [1, 1.2, 1],
+                    opacity: [0.7, 1, 0.7]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    delay: i * 0.3
+                  }}
+                  className="text-pink-500 text-lg"
+                >
+                  💖
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1, duration: 1 }}
+            className="absolute bottom-8 left-0 right-0 flex justify-center"
+          >
+            <motion.div
+              animate={{ 
+                scale: [1, 1.1, 1],
+                rotate: [0, 5, -5, 0]
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                repeatType: "reverse"
+              }}
+            >
+              <FaHeart className="text-pink-500 text-2xl" />
+            </motion.div>
+          </motion.div>
+        </>
+      )}
+    </motion.section>
+  );
+};
+
+const MemoryScroll = ({ scrollToCard }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState(null);
+
+  const sections = [
+    { text: "The Day You Were Born — July 28, 2000", image: "IMG-20201228-WA0000.jpg" },
+    { text: "You were full of life, laughter, and light.", image: "IMG-20221013-WA0021.jpg" },
+    { text: "Our virtual laughs and real emotions.", image: "received_291728971735716.jpeg" },
+    { text: "You looked like poetry in motion.", image: "received_395726577943816.jpeg" },
+    { text: "Even in rest, you were beauty personified.", image: "received_461249184451801.jpeg" },
+    { text: "Your mischief, your spark — unforgettable.", image: "received_834482910225079.jpeg" },
+    { text: "That smile could melt every worry.", image: "Screenshot_20200730-185227_WhatsApp.jpg" },
+  ];
+
+  const nextSection = () => {
+    setActiveIndex(prev => Math.min(prev + 1, sections.length - 1));
+  };
+
+  const prevSection = () => {
+    setActiveIndex(prev => Math.max(prev - 1, 0));
+  };
+
+  useEffect(() => {
+    const handleScroll = (e) => {
+      e.preventDefault();
+      if (e.deltaY > 0) {
+        nextSection();
+      } else {
+        prevSection();
+      }
+    };
+
+    const handleTouchStart = (e) => {
+      setTouchStart(e.touches[0].clientY);
+    };
+
+    const handleTouchEnd = (e) => {
+      if (!touchStart) return;
+      
+      const touchEnd = e.changedTouches[0].clientY;
+      const diff = touchStart - touchEnd;
+      
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) {
+          nextSection();
+        } else {
+          prevSection();
+        }
+      }
+      
+      setTouchStart(null);
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowDown' || e.key === ' ') {
+        e.preventDefault();
+        nextSection();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        prevSection();
+      }
+    };
+
+    window.addEventListener('wheel', handleScroll, { passive: false });
+    window.addEventListener('touchstart', handleTouchStart);
+    window.addEventListener('touchend', handleTouchEnd);
+    window.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      window.removeEventListener('wheel', handleScroll);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [touchStart]);
+
+  return (
+    <div className="relative">
+      {sections.map((item, index) => (
+        <MemorySection
+          key={index}
+          item={item}
+          index={index}
+          isActive={index === activeIndex}
+        />
+      ))}
+
+      {/* Mobile navigation buttons */}
+      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-4 z-50 sm:hidden">
+        <motion.button
+          onClick={prevSection}
+          disabled={activeIndex === 0}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all ${
+            activeIndex === 0 
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+              : 'bg-pink-500 text-white hover:bg-pink-600'
+          }`}
+        >
+          ↑
+        </motion.button>
+        <motion.button
+          onClick={nextSection}
+          disabled={activeIndex === sections.length - 1}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all ${
+            activeIndex === sections.length - 1
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-pink-500 text-white hover:bg-pink-600'
+          }`}
+        >
+          ↓
+        </motion.button>
+      </div>
+
+      {/* Continue button */}
+      {activeIndex === sections.length - 1 && (
+        <motion.button
+          onClick={scrollToCard}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 1, duration: 0.8, type: "spring" }}
+          whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(236, 72, 153, 0.3)" }}
+          whileTap={{ scale: 0.95 }}
+          className="fixed bottom-8 right-4 sm:right-8 px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full shadow-xl hover:from-pink-600 hover:to-rose-600 transition-all duration-300 flex items-center z-50 text-sm sm:text-base"
+        >
+          Continue <FaArrowDown className="ml-2 animate-bounce" />
+        </motion.button>
+      )}
+
+      {/* Progress indicator */}
+      <div className="fixed top-1/2 right-4 sm:right-8 transform -translate-y-1/2 z-50">
+        <div className="flex flex-col items-center space-y-3">
+          {sections.map((_, index) => (
+            <motion.button
+              key={index}
+              onClick={() => setActiveIndex(index)}
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.8 }}
+              className={`rounded-full transition-all duration-300 ${
+                index === activeIndex 
+                  ? 'bg-pink-600 w-4 h-4 shadow-lg' 
+                  : 'bg-pink-300 w-3 h-3 hover:bg-pink-400'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Progress bar */}
+      <div className="fixed top-0 left-0 w-full h-1 bg-pink-100 z-50">
+        <motion.div
+          className="h-full bg-gradient-to-r from-pink-500 to-rose-500"
+          initial={{ width: '0%' }}
+          animate={{ width: `${((activeIndex + 1) / sections.length) * 100}%` }}
+          transition={{ duration: 0.5 }}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default MemoryScroll;
